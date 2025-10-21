@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -121,8 +122,10 @@ export default function Workspace() {
                         </div>
 
                         {/* Action */}
-                        <Button variant="outline" className="w-full">
-                          View Contract Details →
+                        <Button variant="outline" className="w-full" asChild>
+                          <Link to={`/contracts/${contract.id}`}>
+                            View Contract Details →
+                          </Link>
                         </Button>
                       </div>
                     </CardContent>

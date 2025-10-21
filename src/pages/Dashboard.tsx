@@ -36,16 +36,18 @@ export default function Dashboard() {
                 
                 <TabsContent value="action" className="space-y-4 mt-4">
                   {/* Task Item */}
-                  <div className="flex items-start justify-between p-4 rounded-lg border hover:bg-muted/50 transition-colors">
-                    <div className="space-y-1">
-                      <p className="font-semibold">Review milestone submission</p>
-                      <p className="text-sm text-muted-foreground">Brand Redesign for DeFi Platform</p>
-                      <Badge variant="secondary" className="mt-2">Due in 2 days</Badge>
+                  <Link to="/contracts/contract-1">
+                    <div className="flex items-start justify-between p-4 rounded-lg border hover:bg-muted/50 transition-colors">
+                      <div className="space-y-1">
+                        <p className="font-semibold">Review milestone submission</p>
+                        <p className="text-sm text-muted-foreground">Brand Redesign for DeFi Platform</p>
+                        <Badge variant="secondary" className="mt-2">Due in 2 days</Badge>
+                      </div>
+                      <Button size="sm" className="bg-action hover:bg-action/90">
+                        Review
+                      </Button>
                     </div>
-                    <Button size="sm" className="bg-action hover:bg-action/90">
-                      Review
-                    </Button>
-                  </div>
+                  </Link>
                   
                   <div className="flex items-start justify-between p-4 rounded-lg border hover:bg-muted/50 transition-colors">
                     <div className="space-y-1">
@@ -161,7 +163,7 @@ export default function Dashboard() {
                     <X className="h-4 w-4" />
                   </Button>
                 </div>
-                <Link to="/jobs" className="text-sm text-primary hover:underline flex items-center gap-1">
+                <Link to={`/jobs/${mockJobs[0].id}`} className="text-sm text-primary hover:underline flex items-center gap-1">
                   View Details <ArrowUpRight className="h-3 w-3" />
                 </Link>
               </div>

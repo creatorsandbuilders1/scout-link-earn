@@ -125,8 +125,10 @@ export default function Jobs() {
                         <TrendingUp className="h-4 w-4" />
                         Recommend
                       </Button>
-                      <Button size="sm" className="bg-action hover:bg-action/90 gap-2">
-                        Apply (2 Credits)
+                      <Button size="sm" className="bg-action hover:bg-action/90 gap-2" asChild>
+                        <Link to={`/jobs/${job.id}`}>
+                          Apply (2 Credits)
+                        </Link>
                       </Button>
                       <Button variant="ghost" size="sm" asChild>
                         <Link to={`/jobs/${job.id}`}>

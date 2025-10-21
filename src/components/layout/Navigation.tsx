@@ -48,9 +48,11 @@ export const Navigation = () => {
 
         {/* Right: Actions & Profile */}
         <div className="flex items-center space-x-4">
-          <Button variant="outline" size="sm" className="hidden sm:flex">
-            + Post a Project
-          </Button>
+          <Link to="/jobs">
+            <Button variant="outline" size="sm" className="hidden sm:flex">
+              + Post a Project
+            </Button>
+          </Link>
           
           {/* Notifications */}
           <Button variant="ghost" size="icon" className="relative">
@@ -81,7 +83,7 @@ export const Navigation = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuItem asChild>
-                <Link to="/profile">View Profile</Link>
+                <Link to={`/profile/${currentUser.username}`}>View Profile</Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link to="/dashboard">Dashboard</Link>
