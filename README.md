@@ -1,73 +1,279 @@
-# Welcome to your Lovable project
+# REFERYDO! - Decentralized Talent Marketplace
 
-## Project info
+> **Refer-You-Do**: The future of work powered by trust, transparency, and Stacks blockchain technology.
 
-**URL**: https://lovable.dev/projects/a352e4a2-25cd-49f6-80d9-ca6a721cde7c
+![REFERYDO! Logo](https://odewvxxcqqqfpanvsaij.supabase.co/storage/v1/object/public/referydoplace/logoreferydo.png)
 
-## How can I edit this code?
+## 🎯 What is REFERYDO!?
 
-There are several ways of editing your application.
+REFERYDO! is a revolutionary Web3 talent (Users who offer digital services) marketplace built on the Stacks blockchain that transforms how freelancers, scouts, and clients connect and collaborate. Unlike traditional platforms that extract value, REFERYDO! distributes it fairly among all participants through smart contracts and guaranteed commissions. 
 
-**Use Lovable**
+it gives everyone the opportunity to offer a service, be discovered by others, and allow other users get clients for you, all while guaranteeing their commissions—a place where incentives are aligned for everyone!
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/a352e4a2-25cd-49f6-80d9-ca6a721cde7c) and start prompting.
+### The Problem We Solve
 
-Changes made via Lovable will be committed automatically to this repo.
+Traditional freelance platforms:
+- Charge predatory 20%+ fees
+- Own your reputation and reviews
+- Provide no incentive for referrals
+- Have delayed and disputed payments, Geographical limitations, payment systems that exclude some countries
+- Lock you into their ecosystem
 
-**Use your preferred IDE**
+### Our Solution
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+REFERYDO! offers:
+- **Fair 7% ecosystem fee** - Transparent, community-driven pricing
+- **Sovereign on-chain reputation** - Your work history, owned by you forever- The proofs of your work are recorded in stacks on BTC.
+- **Guaranteed Scout commissions** - Every referral gets paid automatically to their wallets!
+- **Instant smart contract payouts** - When the work is done, the money is distributed instantly. No delays, only blockchain
+- **Three-way value creation** - Clients, Talent, and Scouts all win, Each user can operate in all 3 roles
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+---
 
-Follow these steps:
+## 🏗️ Architecture
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### Tech Stack
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+**Frontend**:
+- React + TypeScript
+- Tailwind CSS + shadcn/ui
+- Vite
+- React Router
+- Tanstack Query
 
-# Step 3: Install the necessary dependencies.
-npm i
+**Backend**:
+- Supabase (PostgreSQL + Edge Functions)
+- Real-time subscriptions
+- Row Level Security (RLS)
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+**Blockchain**:
+- Stacks L2 (Bitcoin-secured)
+- Clarity smart contracts
+- Xverse & Leather wallet integration
+
+**Storage**:
+- Supabase Storage
+- IPFS-ready architecture
+
+---
+
+## 🚀 Key Features
+
+### 1. Wallet-First Authentication
+- No emails, no passwords
+- Connect with Xverse or Leather wallet
+- Your wallet = Your identity
+
+### 2. Discovery Hub
+- Browse talent portfolios
+- Visual-first showcase
+- Skills-based filtering
+- Scout connection system
+
+### 3. Job Board
+- Post projects for free (off-chain)
+- Talent can apply directly
+- Scouts can recommend from their roster, This is free networking in its purest form!
+- Complete candidate review dashboard
+
+### 4. Smart Contract Escrow
+- Funds locked in transparent smart contract (on testnet right now)
+- Automatic distribution on completion:
+  - Talent receives payment
+  - Scout receives commission
+  - Platform receives fee
+- Dispute resolution via community jury
+
+### 5. Workspace
+- Unified command center for all activities
+- Job postings management (Clients)
+- Application tracking (Talent)
+- Recommendation tracking (Scouts)
+- Active contract management
+- Integrated messaging (coming soon)
+
+### 6. Scout Economy
+- Connect with talent you trust
+- Earn commissions on successful referrals
+- Build your reputation as a connector
+- Guaranteed payouts via smart contracts
+
+---
+
+## 📊 User Roles 
+
+Each user can assume these 3 roles at the same time, it is not exclusive, a talent can be a client, a scout can be a talent, and so on, this is natural and allows pure networking:
+
+### 🎨 Talent
+- Create dynamic profile with portfolio
+- Set your own finder's fee (commission for scouts)
+- Get discovered by scouts
+- Apply to jobs
+- Receive proposals
+- Work with escrow protection
+
+### 🔍 Scout
+- Build your roster of trusted talent
+- Recommend talent for projects
+- Earn automatic commissions
+- Track recommendation success
+- Monetize your network
+
+### 💼 Client
+- Post projects for free
+- Review applications and recommendations
+- Hire with confidence
+- Pay via smart contract escrow
+- Approve work and release funds
+
+---
+
+## 🔐 Smart Contract Features
+
+### Project Escrow Contract
+
+**Status Flow**:
+```
+0: Created → 1: Funded → 2: Completed
+                      ↓
+                  3: Disputed (Community Resolution)
 ```
 
-**Edit a file directly in GitHub**
+**Key Functions**:
+- `create-project`: Initialize project with participants
+- `fund-escrow`: Client locks funds in contract
+- `approve-and-distribute`: Automatic payment distribution
+- `submit-dispute`: Community-based resolution
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+**Security**:
+- Immutable participant addresses
+- Atomic fund distribution
+- No single point of failure
+- Transparent on-chain history
 
-**Use GitHub Codespaces**
+---
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🎨 Design Philosophy
 
-## What technologies are used for this project?
+### Visual Identity
+- **Bold Typography**: Black font-weight for impact
+- **Neon Professional**: Blue (#2563EB), Green (#4ADE80), Orange (#F97316)
+- **Floating Elements**: Dynamic, energetic UI
+- **Glassmorphism**: Modern, premium feel
 
-This project is built with:
+### UX Principles
+- **Wallet-First**: No traditional auth friction
+- **Visual Showcase**: Talent portfolios front and center
+- **Economic Transparency**: All fees clearly displayed
+- **Trust Signals**: Scout connections, on-chain reputation
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+---
 
-## How can I deploy this project?
+## 📁 Project Structure
 
-Simply open [Lovable](https://lovable.dev/projects/a352e4a2-25cd-49f6-80d9-ca6a721cde7c) and click on Share -> Publish.
+```
+referydo/
+├── src/
+│   ├── components/        # Reusable UI components
+│   ├── contexts/          # React contexts (Wallet, Scout)
+│   ├── hooks/             # Custom React hooks
+│   ├── pages/             # Route pages
+│   ├── services/          # Business logic
+│   └── types/             # TypeScript definitions
+├── supabase/
+│   ├── functions/         # Edge Functions
+│   └── migrations/        # Database migrations
+├── contracts/             # Clarity smart contracts
+├── docs/                  # Documentation
+└── public/                # Static assets
+```
 
-## Can I connect a custom domain to my Lovable project?
+---
 
-Yes, you can!
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### Supabase Edge Functions
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+```bash
+# Deploy all functions
+supabase functions deploy create-project
+supabase functions deploy create-application
+supabase functions deploy create-recommendation
+supabase functions deploy accept-project
+supabase functions deploy submit-work
+# ... and more
+```
+
+
+## 📚 Documentation
+
+Comprehensive documentation is available in the `/docs` folder:
+
+- Architecture guides
+- API documentation
+- Smart contract specs
+- Deployment guides
+- Feature implementation details
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our contributing guidelines in `/docs/CONTRIBUTING.md`.
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+---
+
+## 🏆 Hackathon Submission
+
+**Built for**: [Hackathon Name]
+**Category**: Web3 / DeFi / Future of Work
+**Team**: REFERYDO! Team
+
+### Key Innovations
+
+1. **Three-Way Value Creation**: First platform to guarantee Scout commissions via smart contracts
+2. **Sovereign Reputation**: On-chain work history that users truly own
+3. **Hybrid Architecture**: Off-chain job board + on-chain contracts for optimal UX
+4. **Visual-First Discovery**: Talent showcase prioritizes portfolios over resumes
+5. **Complete Workflow**: End-to-end from discovery to payment in one platform
+
+---
+
+## 🔗 Links
+
+- **Live Demo**: [Coming Soon]
+- **Smart Contracts**: 
+
+https://explorer.hiro.so/txid/ST2ZG3R1EMK0Z83EX4N43HATRFM68JMS01TNGZRPV.profile-registry?chain=testnet
+
+iterations:
+
+https://explorer.hiro.so/txid/0x0a82b710f47355688b163d2bfc3f62036ec36e112a6bdf1dd7f690509801c57e?chain=testnet
+
+https://explorer.hiro.so/txid/0x16450f621874d88ef5ff73421c9bb1d8544005ceab46ebafaafe223584951269?chain=testnet
+
+https://explorer.hiro.so/txid/0x7edce46fe54244a0c231cd0d0da0086fd34c2f0b0f4b00ea654fd3711d518c19?chain=testnet
+
+https://explorer.hiro.so/txid/0x0fedd279dd252b479653c08bc945feca2082d87981589b90d35e916f503f2a8e?chain=testnet
+
+https://explorer.hiro.so/address/ST2ZG3R1EMK0Z83EX4N43HATRFM68JMS01TNGZRPV?chain=testnet
+
+
+---
+
+## 💡 Vision
+
+REFERYDO! is building the future of work where:
+- Your network is your net worth
+- Trust is programmable
+- Reputation is portable
+- Everyone gets paid fairly
+- Blockchain enables, not complicates
+---
+
+

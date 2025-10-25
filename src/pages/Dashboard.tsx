@@ -6,12 +6,14 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowUpRight, DollarSign, TrendingUp, Briefcase, Star, X } from "lucide-react";
 import { currentUser, mockJobs, mockTalents, getUserById } from "@/lib/mockData";
 import { Link } from "react-router-dom";
+import { AppLayout } from "@/components/layout/AppLayout";
 
 export default function Dashboard() {
   const greeting = `Good morning, ${currentUser.full_name.split(' ')[0]}`;
   
   return (
-    <div className="container mx-auto px-4 py-8 space-y-8">
+    <AppLayout>
+      <div className="container mx-auto px-4 py-8 space-y-8">
       {/* Greeting */}
       <div>
         <h1 className="text-4xl font-black text-foreground mb-2">{greeting}</h1>
@@ -235,5 +237,6 @@ export default function Dashboard() {
         </div>
       </div>
     </div>
+    </AppLayout>
   );
 }

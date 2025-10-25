@@ -4,15 +4,60 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { mockContracts, getUserById } from "@/lib/mockData";
-import { DollarSign, Link2, FileText } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { DollarSign, Link2, FileText, Loader2, Clock, AlertCircle } from "lucide-react";
+import { AppLayout } from "@/components/layout/AppLayout";
+import { useWorkspaceContracts } from "@/hooks/useWorkspaceContracts";
+import { ProposalReviewModal } from "@/components/ProposalReviewModal";
+import { ProjectStatus } from "@/types/contracts";
+import { MyJobPostings } from "@/components/MyJobPostings";
+import { MyApplications } from "@/components/MyApplications";
+import { MyRecommendations } from "@/components/MyRecommendations";
 
 export default function Workspace() {
   const [activeTab, setActiveTab] = useState("contracts");
+  const { 
+    contracts, 
+    loading, 
+    error, 
+    filter, 
+    setFilter, 
+    refetch,
+    getUserRole,
+    getOtherParty 
+  } = useWorkspaceContracts();
+  
+  const [selectedContract, setSelectedContract] = useState<any | null>(null);
+  const [proposalModalOpen, setProposalModalOpen] = useState(false);
+
+  const handleReviewProposal = (contract: any) => {
+    setSelectedContract(contract);
+    setProposalModalOpen(true);
+  };
+
+  const getStatusBadge = (status: number) => {
+    switch (status) {
+      case ProjectStatus.Created:
+        return { label: 'CREATED', className: 'bg-blue-500' };
+      case ProjectStatus.Funded:
+        return { label: 'ACTIVE', className: 'bg-primary' };
+      case ProjectStatus.Completed:
+        return { label: 'COMPLETED', className: 'bg-success' };
+      case ProjectStatus.Disputed:
+        return { label: 'IN DISPUTE', className: 'bg-destructive' };
+      case ProjectStatus.PendingAcceptance:
+        return { label: 'PENDING APPROVAL', className: 'bg-amber-500' };
+      case ProjectStatus.Declined:
+        return { label: 'DECLINED', className: 'bg-gray-500' };
+      default:
+        return { label: 'UNKNOWN', className: 'bg-gray-400' };
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
+    <AppLayout>
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 py-8 max-w-6xl">
         <div>
           <h1 className="text-4xl font-black mb-2">Workspace</h1>
           <p className="text-muted-foreground mb-8">
@@ -21,233 +66,265 @@ export default function Workspace() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full max-w-md grid-cols-2 mb-8">
+          <TabsList className="grid w-full max-w-4xl grid-cols-5 mb-8">
+            <TabsTrigger value="job-postings">My Jobs</TabsTrigger>
+            <TabsTrigger value="applications">Applications</TabsTrigger>
+            <TabsTrigger value="recommendations">Recommendations</TabsTrigger>
             <TabsTrigger value="contracts">Contracts</TabsTrigger>
             <TabsTrigger value="messages">Messages</TabsTrigger>
           </TabsList>
+
+          {/* My Job Postings (Client View) */}
+          <TabsContent value="job-postings" className="space-y-6">
+            <MyJobPostings />
+          </TabsContent>
+
+          {/* My Applications (Talent View) */}
+          <TabsContent value="applications" className="space-y-6">
+            <MyApplications />
+          </TabsContent>
+
+          {/* My Recommendations (Scout View) */}
+          <TabsContent value="recommendations" className="space-y-6">
+            <MyRecommendations />
+          </TabsContent>
 
           {/* Contracts View */}
           <TabsContent value="contracts" className="space-y-6">
             {/* Filter Tabs */}
             <div className="flex gap-2">
-              <Badge variant="default" className="cursor-pointer">All</Badge>
-              <Badge variant="outline" className="cursor-pointer">Active</Badge>
-              <Badge variant="outline" className="cursor-pointer">Pending Funding</Badge>
-              <Badge variant="outline" className="cursor-pointer">Completed</Badge>
+              <Badge 
+                variant={filter === 'all' ? 'default' : 'outline'} 
+                className="cursor-pointer"
+                onClick={() => setFilter('all')}
+              >
+                All
+              </Badge>
+              <Badge 
+                variant={filter === 'active' ? 'default' : 'outline'} 
+                className="cursor-pointer"
+                onClick={() => setFilter('active')}
+              >
+                Active
+              </Badge>
+              <Badge 
+                variant={filter === 'pending' ? 'default' : 'outline'} 
+                className="cursor-pointer"
+                onClick={() => setFilter('pending')}
+              >
+                Pending Approval
+              </Badge>
+              <Badge 
+                variant={filter === 'completed' ? 'default' : 'outline'} 
+                className="cursor-pointer"
+                onClick={() => setFilter('completed')}
+              >
+                Completed
+              </Badge>
             </div>
+
+            {/* Loading State */}
+            {loading && (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+              </div>
+            )}
+
+            {/* Error State */}
+            {error && (
+              <div className="flex items-center justify-center py-12">
+                <div className="text-center space-y-2">
+                  <AlertCircle className="h-12 w-12 text-destructive mx-auto" />
+                  <p className="text-destructive">{error}</p>
+                  <Button onClick={refetch} variant="outline">Retry</Button>
+                </div>
+              </div>
+            )}
+
+            {/* Empty State */}
+            {!loading && !error && contracts.length === 0 && (
+              <div className="text-center py-12">
+                <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-50" />
+                <h3 className="text-lg font-semibold mb-2">No contracts yet</h3>
+                <p className="text-muted-foreground">
+                  Your contracts will appear here once you start working on projects
+                </p>
+              </div>
+            )}
 
             {/* Contract Cards */}
-            <div className="space-y-4">
-              {mockContracts.map((contract) => {
-                const client = getUserById(contract.client_id);
-                const talent = getUserById(contract.talent_id);
-                const scout = contract.scout_id ? getUserById(contract.scout_id) : null;
-                
-                const statusColors = {
-                  active: "bg-primary",
-                  pending_funding: "bg-action",
-                  in_dispute: "bg-destructive",
-                  completed: "bg-success",
-                };
+            {!loading && !error && contracts.length > 0 && (
+              <div className="space-y-4">
+                {contracts.map((contract) => {
+                  const userRole = getUserRole(contract);
+                  const otherParty = getOtherParty(contract);
+                  const statusBadge = getStatusBadge(contract.status);
+                  const isPendingApproval = contract.status === ProjectStatus.PendingAcceptance && userRole === 'talent';
 
-                return (
-                  <Card key={contract.id} className="shadow-soft hover:shadow-elevated transition-shadow">
-                    <CardContent className="p-6">
-                      <div className="space-y-4">
-                        {/* Header */}
-                        <div className="flex items-start justify-between">
-                          <div className="space-y-2">
-                            <h3 className="text-xl font-bold text-primary">
-                              {contract.project_title}
-                            </h3>
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                              <span>Client: @{client?.username || 'unknown'}</span>
-                              <span>•</span>
-                              <span>Talent: @{talent?.username || 'unknown'}</span>
+                  return (
+                    <Card key={contract.id} className="shadow-soft hover:shadow-elevated transition-shadow">
+                      <CardContent className="p-6">
+                        <div className="space-y-4">
+                          {/* Header */}
+                          <div className="flex items-start justify-between">
+                            <div className="space-y-2 flex-1">
+                              <h3 className="text-xl font-bold text-primary">
+                                {contract.project_title || 'Untitled Project'}
+                              </h3>
+                              <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                                {otherParty && (
+                                  <div className="flex items-center gap-2">
+                                    <Avatar className="h-6 w-6">
+                                      <AvatarImage src={otherParty.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${otherParty.address}`} />
+                                      <AvatarFallback>{otherParty.username[0].toUpperCase()}</AvatarFallback>
+                                    </Avatar>
+                                    <span>
+                                      {otherParty.role === 'client' ? 'Client' : 'Talent'}: @{otherParty.username}
+                                    </span>
+                                  </div>
+                                )}
+                                <span>•</span>
+                                <span>You: {userRole}</span>
+                              </div>
+                            </div>
+                            
+                            <Badge className={statusBadge.className}>
+                              {statusBadge.label}
+                            </Badge>
+                          </div>
+
+                          {/* Pending Approval Banner */}
+                          {isPendingApproval && (
+                            <div className="bg-amber-50 border-2 border-amber-200 rounded-lg p-4">
+                              <div className="flex items-start gap-2">
+                                <Clock className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
+                                <div className="flex-1">
+                                  <p className="text-sm font-semibold text-amber-800">
+                                    Pending Your Approval
+                                  </p>
+                                  <p className="text-sm text-amber-700">
+                                    Review this proposal and decide whether to accept or decline
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Financial Info */}
+                          <div className="flex items-center gap-6 text-sm">
+                            <div className="flex items-center gap-2">
+                              <DollarSign className="h-4 w-4 text-success" />
+                              <span className="text-muted-foreground">Amount:</span>
+                              <span className="font-bold text-success">
+                                {(contract.amount_micro_stx / 1000000).toFixed(2)} STX
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <FileText className="h-4 w-4 text-muted-foreground" />
+                              <span className="text-muted-foreground">Project ID:</span>
+                              <span className="font-mono text-sm">
+                                #{contract.project_id}
+                              </span>
                             </div>
                           </div>
-                          
-                          <Badge className={statusColors[contract.status]}>
-                            {contract.status.replace('_', ' ').toUpperCase()}
-                          </Badge>
+
+                          {/* Scout Acknowledgment */}
+                          {contract.scout_id && contract.scout_id !== contract.client_id && (
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <Link2 className="h-4 w-4" />
+                              <span>Connected by @{contract.scout?.username || 'Scout'}</span>
+                              <Badge className="bg-success/10 text-success text-xs">
+                                {contract.scout_fee_percent}% commission
+                              </Badge>
+                            </div>
+                          )}
+
+                          {/* Project Brief Preview */}
+                          {contract.project_brief && (
+                            <div className="text-sm text-muted-foreground">
+                              <p className="line-clamp-2">{contract.project_brief}</p>
+                            </div>
+                          )}
+
+                          {/* Action Button */}
+                          {isPendingApproval ? (
+                            <Button 
+                              className="w-full bg-action hover:bg-action/90"
+                              onClick={() => handleReviewProposal(contract)}
+                            >
+                              <AlertCircle className="h-4 w-4 mr-2" />
+                              Review Proposal
+                            </Button>
+                          ) : (
+                            <Button 
+                              variant="outline" 
+                              className="w-full"
+                              asChild
+                            >
+                              <Link to={`/workspace/${contract.project_id}`}>
+                                View Contract Details →
+                              </Link>
+                            </Button>
+                          )}
                         </div>
-
-                        {/* Financial Info */}
-                        <div className="flex items-center gap-6 text-sm">
-                          <div className="flex items-center gap-2">
-                            <DollarSign className="h-4 w-4 text-success" />
-                            <span className="text-muted-foreground">Funds in Escrow:</span>
-                            <span className="font-bold text-success">
-                              ${contract.escrow_amount.toLocaleString()}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <FileText className="h-4 w-4 text-muted-foreground" />
-                            <span className="text-muted-foreground">Total Value:</span>
-                            <span className="font-bold">
-                              ${contract.total_value.toLocaleString()}
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Scout Acknowledgment */}
-                        {scout && (
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <Link2 className="h-4 w-4" />
-                            <span>Connected by @{scout.username}</span>
-                          </div>
-                        )}
-
-                        {/* Milestones Preview */}
-                        <div className="space-y-2">
-                          <p className="text-sm font-semibold">Milestones Progress</p>
-                          <div className="flex gap-2">
-                            {contract.milestones.map((milestone) => (
-                              <div
-                                key={milestone.id}
-                                className={`h-2 flex-1 rounded-full ${
-                                  milestone.status === 'approved'
-                                    ? 'bg-success'
-                                    : milestone.status === 'submitted'
-                                    ? 'bg-action'
-                                    : 'bg-muted'
-                                }`}
-                              />
-                            ))}
-                          </div>
-                          <p className="text-xs text-muted-foreground">
-                            {contract.milestones.filter(m => m.status === 'approved').length} of{' '}
-                            {contract.milestones.length} milestones completed
-                          </p>
-                        </div>
-
-                        {/* Action */}
-                        <Button variant="outline" className="w-full" asChild>
-                          <Link to={`/contracts/${contract.id}`}>
-                            View Contract Details →
-                          </Link>
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            )}
           </TabsContent>
 
           {/* Messages View */}
           <TabsContent value="messages">
-            <div className="grid lg:grid-cols-3 gap-6 h-[600px]">
-              {/* Conversations List */}
-              <Card className="lg:col-span-1 shadow-soft overflow-hidden">
-                <CardContent className="p-0">
-                  <div className="divide-y">
-                    {[1, 2, 3, 4, 5].map((i) => (
-                      <div
-                        key={i}
-                        className={`p-4 cursor-pointer hover:bg-muted/50 transition-colors ${
-                          i === 1 ? 'bg-muted/30' : ''
-                        }`}
-                      >
-                        <div className="flex items-start gap-3">
-                          <div className="relative">
-                            <img
-                              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${i}`}
-                              alt="Avatar"
-                              className="h-12 w-12 rounded-full"
-                            />
-                            {i <= 2 && (
-                              <div className="absolute -top-1 -right-1 h-4 w-4 bg-action rounded-full border-2 border-background" />
-                            )}
-                          </div>
-                          <div className="flex-1 min-w-0 space-y-1">
-                            <div className="flex items-center justify-between">
-                              <p className="font-semibold text-sm">@user_name_{i}</p>
-                              <span className="text-xs text-muted-foreground">2h</span>
-                            </div>
-                            <p className="text-sm text-muted-foreground line-clamp-2">
-                              Hey, I'd love to discuss the project...
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Active Chat */}
-              <Card className="lg:col-span-2 shadow-soft flex flex-col">
-                <div className="p-4 border-b bg-muted/30">
-                  <div className="flex items-center gap-3">
-                    <img
-                      src="https://api.dicebear.com/7.x/avataaars/svg?seed=1"
-                      alt="Avatar"
-                      className="h-10 w-10 rounded-full"
-                    />
-                    <div>
-                      <p className="font-semibold">@user_name_1</p>
-                      <p className="text-xs text-muted-foreground">Online</p>
-                    </div>
-                  </div>
-                </div>
-                
-                <CardContent className="flex-1 p-4 overflow-y-auto space-y-4">
-                  <div className="text-center">
-                    <p className="text-sm text-muted-foreground">
-                      Start of conversation with @user_name_1
-                    </p>
-                  </div>
-                  
-                  {/* Sample messages */}
-                  <div className="flex gap-3">
-                    <img
-                      src="https://api.dicebear.com/7.x/avataaars/svg?seed=1"
-                      alt="Avatar"
-                      className="h-8 w-8 rounded-full"
-                    />
-                    <div className="flex-1 space-y-1">
-                      <div className="bg-muted rounded-lg p-3 max-w-md">
-                        <p className="text-sm">
-                          Hey! I saw your profile and I think you'd be perfect for a project I'm working on.
-                        </p>
-                      </div>
-                      <span className="text-xs text-muted-foreground">2:34 PM</span>
-                    </div>
-                  </div>
-                  
-                  <div className="flex gap-3 flex-row-reverse">
-                    <img
-                      src="https://api.dicebear.com/7.x/avataaars/svg?seed=jesuel"
-                      alt="Avatar"
-                      className="h-8 w-8 rounded-full"
-                    />
-                    <div className="flex-1 flex flex-col items-end space-y-1">
-                      <div className="bg-primary text-primary-foreground rounded-lg p-3 max-w-md">
-                        <p className="text-sm">
-                          Thanks for reaching out! I'd love to hear more about it.
-                        </p>
-                      </div>
-                      <span className="text-xs text-muted-foreground">2:36 PM</span>
-                    </div>
-                  </div>
-                </CardContent>
-                
-                <div className="p-4 border-t">
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      placeholder="Type a message..."
-                      className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
-                    <Button className="bg-primary">Send</Button>
-                  </div>
-                </div>
-              </Card>
-            </div>
+            <Card className="shadow-soft">
+              <CardContent className="p-12 text-center">
+                <FileText className="h-16 w-16 text-muted-foreground mx-auto mb-4 opacity-50" />
+                <h3 className="text-2xl font-bold mb-2">Messaging Coming Soon</h3>
+                <p className="text-muted-foreground max-w-md mx-auto">
+                  Direct messaging between clients and talents will be available in a future update. 
+                  For now, use the contract system to manage your projects.
+                </p>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
+
+        {/* Proposal Review Modal */}
+        {selectedContract && (
+          <ProposalReviewModal
+            open={proposalModalOpen}
+            onClose={() => {
+              setProposalModalOpen(false);
+              setSelectedContract(null);
+            }}
+            project={{
+              id: selectedContract.project_id,
+              title: selectedContract.project_title || 'Project Proposal',
+              description: selectedContract.project_brief || '',
+              amount: selectedContract.amount_micro_stx / 1000000,
+              scoutFeePercent: selectedContract.scout_fee_percent,
+              platformFeePercent: selectedContract.platform_fee_percent,
+              status: selectedContract.status,
+              createdAt: selectedContract.created_at,
+              client: {
+                address: selectedContract.client_id,
+                username: selectedContract.client?.username,
+                avatar: selectedContract.client?.avatar_url,
+              },
+              scout: selectedContract.scout_id !== selectedContract.client_id ? {
+                address: selectedContract.scout_id,
+                username: selectedContract.scout?.username,
+                avatar: selectedContract.scout?.avatar_url,
+              } : undefined,
+            }}
+            onStatusChange={() => {
+              refetch();
+            }}
+          />
+        )}
       </div>
     </div>
+    </AppLayout>
   );
 }

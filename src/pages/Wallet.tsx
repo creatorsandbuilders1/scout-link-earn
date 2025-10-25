@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { TrendingUp, ExternalLink, Search } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { AppLayout } from "@/components/layout/AppLayout";
 
 export default function Wallet() {
   const transactions = [
@@ -56,8 +57,9 @@ export default function Wallet() {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
+    <AppLayout>
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 py-8 max-w-6xl">
         <div>
           <h1 className="text-4xl font-black mb-2">Wallet / Earnings</h1>
           <p className="text-muted-foreground mb-8">
@@ -202,5 +204,6 @@ export default function Wallet() {
         </Card>
       </div>
     </div>
+    </AppLayout>
   );
 }

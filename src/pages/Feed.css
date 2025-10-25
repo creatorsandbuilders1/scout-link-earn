@@ -1,0 +1,36 @@
+/* =====================================================
+ * MASONRY GRID STYLES
+ * =====================================================
+ * Pinterest-style masonry layout for The Feed
+ * ===================================================== */
+
+.masonry-grid {
+  display: flex;
+  margin-left: -16px; /* gutter size offset */
+  width: auto;
+}
+
+.masonry-grid-column {
+  padding-left: 16px; /* gutter size */
+  background-clip: padding-box;
+}
+
+/* Style for each item in the masonry grid */
+.masonry-grid-column > * {
+  margin-bottom: 16px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .masonry-grid {
+    margin-left: -12px;
+  }
+  
+  .masonry-grid-column {
+    padding-left: 12px;
+  }
+  
+  .masonry-grid-column > * {
+    margin-bottom: 12px;
+  }
+}
