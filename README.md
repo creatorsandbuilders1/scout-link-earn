@@ -1,8 +1,11 @@
-# REFERYDO! - Decentralized Talent Marketplace
+# REFERYDO! - Decentralized Talent Marketplace 
+
 
 > **Refer-You-Do**: The future of work powered by trust, transparency, and Stacks blockchain technology.
 
 ![REFERYDO! Logo](https://odewvxxcqqqfpanvsaij.supabase.co/storage/v1/object/public/referydoplace/logoreferydo.png)
+
+More About Referydo, check this notion: https://harmless-oatmeal-afb.notion.site/REFERYDO-299ba1a293e8807b9e73f210bc218d1b
 
 ## 🎯 What is REFERYDO!?
 
@@ -214,25 +217,6 @@ Comprehensive documentation is available in the `/docs` folder:
 - Deployment guides
 - Feature implementation details
 
----
-
-## 🤝 Contributing
-
-We welcome contributions! Please see our contributing guidelines in `/docs/CONTRIBUTING.md`.
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
----
-
-## 🏆 Hackathon Submission
-
-**Built for**: [Hackathon Name]
-**Category**: Web3 / DeFi / Future of Work
-**Team**: REFERYDO! Team
 
 ### Key Innovations
 
@@ -246,7 +230,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 🔗 Links
 
-- **Live Demo**: [Coming Soon]
+- **Live Demo**: https://www.referydo.xyz/
 - **Smart Contracts**: 
 
 https://explorer.hiro.so/txid/ST2ZG3R1EMK0Z83EX4N43HATRFM68JMS01TNGZRPV.profile-registry?chain=testnet
@@ -271,7 +255,7 @@ https://explorer.hiro.so/address/ST2ZG3R1EMK0Z83EX4N43HATRFM68JMS01TNGZRPV?chain
 REFERYDO! is building the future of work where:
 - Your network is your net worth
 - Trust is programmable
-- Reputation is portable
+- Reputation is YOURS!
 - Everyone gets paid fairly
 - Blockchain enables, not complicates
 ---
