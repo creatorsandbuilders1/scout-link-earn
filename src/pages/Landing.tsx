@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { ArrowDown, Wallet, Zap, TrendingUp, Shield, Users, CheckCircle } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useWallet } from "@/contexts/WalletContext";
-import { WalletSelectionModal } from "@/components/WalletSelectionModal";
 import { LandingLayout } from "@/components/layout/LandingLayout";
 import { toast } from "sonner";
 
@@ -29,7 +28,6 @@ export default function Landing() {
   const [scrollY, setScrollY] = useState(0);
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
-  const [showWalletModal, setShowWalletModal] = useState(false);
   const { connectWallet, isConnected } = useWallet();
   const navigate = useNavigate();
   const location = useLocation();
@@ -51,29 +49,37 @@ export default function Landing() {
     }
   }, [isConnected, navigate, from]);
 
-  const handleOpenWalletModal = () => {
-    setShowWalletModal(true);
-  };
-
+  /**
+   * Direct wallet connection - Opens Stacks native modal
+   * No intermediate modal needed
+   */
   const handleConnect = async () => {
+    if (isConnecting) return;
+    
+    setIsConnecting(true);
     try {
+      console.log('[LANDING] Opening Stacks wallet selector...');
       await connectWallet();
       toast.success('Wallet connected successfully!');
       // Redirect to return URL or feed
       navigate(from, { replace: true });
     } catch (error) {
-      console.error('Failed to connect wallet:', error);
-      toast.error('Failed to connect wallet. Please make sure you have Xverse or Leather installed.');
+      console.error('[LANDING] Failed to connect wallet:', error);
+      toast.error('Failed to connect wallet', {
+        description: 'Please make sure you have Xverse or Leather installed.'
+      });
+    } finally {
+      setIsConnecting(false);
     }
   };
 
   return (
     <LandingLayout>
       <div className="min-h-screen bg-white overflow-x-hidden">
-      {/* Fixed Connect Wallet Button */}
+      {/* Fixed Connect Wallet Button - Opens Stacks Modal Directly */}
       <div className="fixed top-6 right-6 z-50">
         <Button 
-          onClick={handleOpenWalletModal}
+          onClick={handleConnect}
           disabled={isConnecting}
           className="bg-action hover:bg-action/90 text-white font-black px-8 py-4 rounded-full shadow-float text-lg border-4 border-white hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -81,13 +87,6 @@ export default function Landing() {
           {isConnecting ? 'CONNECTING...' : 'CONNECT WALLET'}
         </Button>
       </div>
-
-      {/* Wallet Selection Modal */}
-      <WalletSelectionModal
-        open={showWalletModal}
-        onOpenChange={setShowWalletModal}
-        onConnect={handleConnect}
-      />
 
       {/* Section 1: Above the Fold - The Manifesto */}
       <section 
@@ -155,7 +154,7 @@ export default function Landing() {
         </div>
 
         {/* Main Content */}
-        <div className="relative z-10 text-center px-4 max-w-7xl mx-auto">
+        <div className="relative z-10 text-center px-4 max-w-7xl mx-auto pt-20 sm:pt-24">
           {/* Logo - Properly Sized */}
           <div className="mb-6 relative">
             <img 
@@ -944,7 +943,7 @@ export default function Landing() {
             <div className="absolute inset-0 bg-action blur-3xl opacity-50 animate-pulse" />
             
             <Button 
-              onClick={handleOpenWalletModal}
+              onClick={handleConnect}
               disabled={isConnecting}
               className="relative bg-action hover:bg-action/90 text-white font-black text-lg sm:text-xl md:text-2xl lg:text-3xl px-8 py-4 sm:px-12 sm:py-6 md:px-16 md:py-8 rounded-full shadow-float border-3 sm:border-4 border-white hover:scale-105 sm:hover:scale-110 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               style={{

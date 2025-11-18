@@ -46,6 +46,69 @@ interface Post {
   };
 }
 
+/**
+ * =====================================================
+ * HELPER FUNCTIONS - Diversity & Randomization
+ * =====================================================
+ */
+
+/**
+ * Shuffle array using Fisher-Yates algorithm
+ * Returns a new array without modifying the original
+ */
+const shuffleArray = <T,>(array: T[]): T[] => {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+};
+
+/**
+ * Diversify posts by limiting posts per author
+ * Ensures no single author dominates the feed
+ */
+const diversifyByAuthor = (posts: Post[], maxPerAuthor: number = 3): Post[] => {
+  const authorCounts = new Map<string, number>();
+  const diversified: Post[] = [];
+
+  for (const post of posts) {
+    const authorId = post.talent.id;
+    const currentCount = authorCounts.get(authorId) || 0;
+
+    if (currentCount < maxPerAuthor) {
+      diversified.push(post);
+      authorCounts.set(authorId, currentCount + 1);
+    }
+  }
+
+  return diversified;
+};
+
+/**
+ * Process posts for diverse, randomized feed
+ * 1. Diversify by author (max 3 posts per author)
+ * 2. Shuffle the results
+ * 3. Take first 50
+ */
+const processDiverseFeed = (posts: Post[]): Post[] => {
+  console.log('[FEED] Processing diverse feed from', posts.length, 'posts');
+  
+  // Step 1: Diversify by author
+  const diversified = diversifyByAuthor(posts, 3);
+  console.log('[FEED] After diversification:', diversified.length, 'posts');
+  
+  // Step 2: Randomize order
+  const randomized = shuffleArray(diversified);
+  
+  // Step 3: Take first 50
+  const final = randomized.slice(0, 50);
+  console.log('[FEED] Final feed:', final.length, 'posts');
+  
+  return final;
+};
+
 export default function Feed() {
   const { stacksAddress } = useWallet();
   const [activeTab, setActiveTab] = useState<'discover' | 'following'>('discover');
@@ -63,9 +126,14 @@ export default function Feed() {
 
   /**
    * =====================================================
-   * DISCOVER TAB: All Posts
+   * DISCOVER TAB: All Posts (DIVERSE & RANDOMIZED)
    * =====================================================
-   * Fetches all published posts with talent info
+   * Fetches more posts than needed, then:
+   * 1. Diversifies by author (max 3 per author)
+   * 2. Randomizes order
+   * 3. Shows 50 posts
+   * 
+   * Result: Every refresh = different, diverse feed
    * =====================================================
    */
   const fetchDiscoverFeed = async () => {
@@ -73,6 +141,8 @@ export default function Feed() {
       setLoading(true);
       console.log('[FEED] Fetching Discover feed...');
 
+      // Fetch MORE posts than we need (200 instead of 50)
+      // This gives us a larger pool for randomization
       const { data, error } = await supabase
         .from('posts')
         .select(`
@@ -93,7 +163,7 @@ export default function Feed() {
         `)
         .eq('status', 'published')
         .order('created_at', { ascending: false })
-        .limit(50);
+        .limit(200); // Increased from 50 to 200
 
       if (error) {
         console.error('[FEED] Error fetching discover feed:', error);
@@ -101,7 +171,7 @@ export default function Feed() {
       }
 
       // Transform data to match our interface
-      const posts: Post[] = (data || []).map((item: any) => ({
+      const allPosts: Post[] = (data || []).map((item: any) => ({
         id: item.id,
         type: item.type,
         title: item.title,
@@ -118,8 +188,11 @@ export default function Feed() {
         }
       }));
 
-      setDiscoverPosts(posts);
-      console.log('[FEED] Discover feed loaded:', posts.length, 'posts');
+      // Process for diversity and randomization
+      const diversePosts = processDiverseFeed(allPosts);
+
+      setDiscoverPosts(diversePosts);
+      console.log('[FEED] Discover feed loaded:', diversePosts.length, 'posts (from', allPosts.length, 'total)');
     } catch (error) {
       console.error('[FEED] Error:', error);
       toast.error('Failed to load feed');
@@ -131,10 +204,15 @@ export default function Feed() {
 
   /**
    * =====================================================
-   * FOLLOWING TAB: Posts from Followed Talents
+   * FOLLOWING TAB: Posts from Followed Talents (DIVERSE & RANDOMIZED)
    * =====================================================
    * 1. Get list of followed user IDs
-   * 2. Fetch posts from those users
+   * 2. Fetch MORE posts from those users (200 instead of 50)
+   * 3. Diversify by author (max 3 per author)
+   * 4. Randomize order
+   * 5. Show 50 posts
+   * 
+   * Result: Dynamic feed even from people you follow
    * =====================================================
    */
   const fetchFollowingFeed = async () => {
@@ -169,7 +247,7 @@ export default function Feed() {
       const followingIds = followingData.map((f: any) => f.following_id);
       console.log('[FEED] Following', followingIds.length, 'users');
 
-      // Step 2: Get posts from followed users
+      // Step 2: Get posts from followed users (INCREASED LIMIT)
       const { data, error } = await supabase
         .from('posts')
         .select(`
@@ -191,7 +269,7 @@ export default function Feed() {
         .eq('status', 'published')
         .in('talent_id', followingIds)
         .order('created_at', { ascending: false })
-        .limit(50);
+        .limit(200); // Increased from 50 to 200
 
       if (error) {
         console.error('[FEED] Error fetching following posts:', error);
@@ -199,7 +277,7 @@ export default function Feed() {
       }
 
       // Transform data
-      const posts: Post[] = (data || []).map((item: any) => ({
+      const allPosts: Post[] = (data || []).map((item: any) => ({
         id: item.id,
         type: item.type,
         title: item.title,
@@ -216,8 +294,11 @@ export default function Feed() {
         }
       }));
 
-      setFollowingPosts(posts);
-      console.log('[FEED] Following feed loaded:', posts.length, 'posts');
+      // Process for diversity and randomization (SAME AS DISCOVER)
+      const diversePosts = processDiverseFeed(allPosts);
+
+      setFollowingPosts(diversePosts);
+      console.log('[FEED] Following feed loaded:', diversePosts.length, 'posts (from', allPosts.length, 'total)');
     } catch (error) {
       console.error('[FEED] Error:', error);
       toast.error('Failed to load following feed');
