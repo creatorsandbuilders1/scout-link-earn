@@ -171,14 +171,6 @@ export default function Landing() {
             <div className="absolute -bottom-6 right-1/4 w-16 h-16 bg-action/20 rounded-full animate-bounce" />
           </div>
 
-          {/* Slogan */}
-          <h2 
-            className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-8 tracking-[0.3em] text-white/90"
-            style={{ textShadow: '0 2px 20px rgba(0,0,0,0.3)' }}
-          >
-            R E F E R - Y O U - D O
-          </h2>
-
           {/* Sub-headline */}
           <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-white max-w-4xl mx-auto mb-12 leading-relaxed">
             The decentralized talent economy,<br />
